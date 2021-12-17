@@ -5,16 +5,19 @@ from torch.utils.data import DataLoader, SubsetRandomSampler
 from my_dataset import LoadSignalDataset
 from torch import optim
 
+from models.simple_CNN1 import Simple_CNN
 from models.full_connect import FC
 from models.top_Net1 import Net1
 from models.complex_CNN import Complex_CNN
 from models.Res_CNN import Res_CNN
+from models.SE_CNN import SE_CNN
+from models.SE_Res_CNN import SE_Res_CNN
 
 
 if __name__ == "__main__":
     epoch = 500
     batch_size = 128
-    lr = 0.0005
+    lr = 0.0002
     lr_unchanged = True
     acc_time = 0
     loss_sum = 0
@@ -45,11 +48,13 @@ if __name__ == "__main__":
     train_loader = DataLoader(train_loader, batch_size=batch_size, drop_last=True, shuffle=True)
     valid_loader = DataLoader(valid_loader, batch_size=batch_size, drop_last=True, shuffle=True)
 
-    # model = torch.load('Res_CNN.pth').to(device)
+    # model = torch.load('SE_CNN-450.pth').to(device)
+    model = torch.load('SE_Res_CNN-450.pth').to(device)
     # model = Net1().to(device)
     # model = Simple_CNN().to(device)
     # model = Complex_CNN().to(device)
-    model = Res_CNN().to(device)
+    # model = SE_CNN().to(device)
+    # model = SE_Res_CNN().to(device)
     # model = Encoder_Decoder(data_size=1, hidden_size=8, num_layer=4, seq_len=205, batch_size=batch_size).to(device)
     opt = optim.SGD(model.parameters(), lr=lr)
     # opt = optim.Adam(model.parameters(), lr=0.001)
@@ -97,13 +102,13 @@ if __name__ == "__main__":
 
                     if valid_score < 1000 and valid_score < min_score:
                         min_score = valid_score
-                        print('Saving Res_CNN.pth')
-                        torch.save(model, 'Res_CNN.pth')
+                        print('Saving SE_Res_CNN.pth')
+                        torch.save(model, 'SE_Res_CNN.pth')
 
                     acc_time = 0
                     loss_sum = 0
                     valid_score = 0
 
         if i % 100 == 49:
-            print('Saving Res_CNN-{}.pth'.format(i+1))
-            torch.save(model, 'Res_CNN-{}.pth'.format(i+1))
+            print('Saving SE_Res_CNN-{}.pth'.format(i+1))
+            torch.save(model, 'SE_Res_CNN-{}.pth'.format(i+1))
