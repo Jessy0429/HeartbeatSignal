@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 from data_processing import DrawSignal
-from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import SMOTE, RandomOverSampler
 
 
 class MyMahakil(object):
@@ -151,6 +151,14 @@ class MySmote():
         signal, label = smote.fit_resample(data, label)
         return signal, label
 
+class MyRandomOverSampler():
+    def fit_sample(self, data, label):
+        # data : 包含度量信息的样本 数组
+        # label : 样本的标签 数组
+        over_sampler = RandomOverSampler()
+        signal, label = over_sampler.fit_resample(data, label)
+        return signal, label
+
 
 if __name__ == '__main__':
     data = pd.read_csv("./train.csv").drop(['id'], axis=1)
@@ -160,5 +168,5 @@ if __name__ == '__main__':
     for i in range(0, len(data)):
         signal.append([float(i) for i in data.iloc[i, 0].split(',')])
 
-    over_sample = MySmote()
+    over_sample = MyRandomOverSampler()
     signal, label = over_sample.fit_sample(np.array(signal), np.array(label, dtype=int))

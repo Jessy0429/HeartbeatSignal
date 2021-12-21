@@ -9,7 +9,7 @@ test_loader = LoadSignalDataset("./testA.csv", need_over_sample=False, test=True
 test_loader = DataLoader(test_loader, batch_size=batch_size, drop_last=False, shuffle=False)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-model = torch.load('SE_CNN.pth').to(device)
+model = torch.load('Complex_CNN-unbalanced.pth').to(device)
 
 with torch.no_grad():
     for test_data in test_loader:

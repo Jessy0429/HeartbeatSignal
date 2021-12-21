@@ -10,14 +10,15 @@ from models.full_connect import FC
 from models.top_Net1 import Net1
 from models.complex_CNN import Complex_CNN
 from models.Res_CNN import Res_CNN
+from models.Res_CNN1 import Res_CNN1
 from models.SE_CNN import SE_CNN
 from models.SE_Res_CNN import SE_Res_CNN
 
 
 if __name__ == "__main__":
-    epoch = 500
+    epoch = 20
     batch_size = 128
-    lr = 0.0002
+    lr = 0.0005
     lr_unchanged = True
     acc_time = 0
     loss_sum = 0
@@ -28,6 +29,7 @@ if __name__ == "__main__":
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     torch.backends.cudnn.benchmark = True
+    torch.autograd.set_detect_anomaly(True)
 
     # signal_data = LoadSignalDataset("./train.csv", need_over_sample=True)
     # dataset_size = len(signal_data)
@@ -43,21 +45,23 @@ if __name__ == "__main__":
     # train_loader = DataLoader(signal_data, batch_size=batch_size, sampler=train_sampler)
     # valid_loader = DataLoader(signal_data, batch_size=batch_size, sampler=valid_sampler)
 
-    train_loader = LoadSignalDataset("./train_part.csv", need_over_sample=True)
+    # train_loader = LoadSignalDataset("./train.csv", need_over_sample=False)
+    train_loader = LoadSignalDataset("./train.csv", need_over_sample=True)
     valid_loader = LoadSignalDataset("./valid.csv", need_over_sample=False)
     train_loader = DataLoader(train_loader, batch_size=batch_size, drop_last=True, shuffle=True)
     valid_loader = DataLoader(valid_loader, batch_size=batch_size, drop_last=True, shuffle=True)
 
-    # model = torch.load('SE_CNN-450.pth').to(device)
-    model = torch.load('SE_Res_CNN-450.pth').to(device)
+    # model = torch.load('Complex_CNN-20.pth').to(device)
+    model = torch.load('SE_CNN-450.pth').to(device)
     # model = Net1().to(device)
     # model = Simple_CNN().to(device)
     # model = Complex_CNN().to(device)
+    # model = Res_CNN().to(device)
     # model = SE_CNN().to(device)
     # model = SE_Res_CNN().to(device)
-    # model = Encoder_Decoder(data_size=1, hidden_size=8, num_layer=4, seq_len=205, batch_size=batch_size).to(device)
+
     opt = optim.SGD(model.parameters(), lr=lr)
-    # opt = optim.Adam(model.parameters(), lr=0.001)
+    # opt = optim.Adam(model.parameters(), lr= 0.001)
     Loss = nn.L1Loss(reduction='sum')
 
     for i in range(0, epoch):
@@ -102,13 +106,13 @@ if __name__ == "__main__":
 
                     if valid_score < 1000 and valid_score < min_score:
                         min_score = valid_score
-                        print('Saving SE_Res_CNN.pth')
-                        torch.save(model, 'SE_Res_CNN.pth')
+                        # print('Saving Complex_CNN-unbalanced.pth')
+                        # torch.save(model, 'Complex_CNN-unbalanced.pth')
+
 
                     acc_time = 0
                     loss_sum = 0
                     valid_score = 0
 
-        if i % 100 == 49:
-            print('Saving SE_Res_CNN-{}.pth'.format(i+1))
-            torch.save(model, 'SE_Res_CNN-{}.pth'.format(i+1))
+    print('Saving SE_CNN-{}.pth'.format(epoch))
+    torch.save(model, 'SE_CNN-{}.pth'.format(epoch))

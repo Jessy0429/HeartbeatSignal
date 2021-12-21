@@ -38,3 +38,12 @@
 `Res_CNN.py`：ResNet
 
 * 在`complex_CNN`的基础上，引入了残差块
+* 以Res_CNN1为准
+
+`SE_CNN.py`
+
+* 在`complex_CNN`的基础上，引入了SE-block
+
+`SE_Res_CNN.py`
+
+* 融合了残差块和SE-block

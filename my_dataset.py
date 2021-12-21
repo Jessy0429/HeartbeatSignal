@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-from over_sample import MyMahakil, MySmote
+from over_sample import MyMahakil, MySmote, MyRandomOverSampler
 
 
 class LoadSignalDataset(Dataset):
@@ -19,8 +19,9 @@ class LoadSignalDataset(Dataset):
             signal.append([float(i) for i in data.iloc[i, 0].split(',')])
         if need_over_sample and not self.test:
             print("Over sampling ...")
-            over_sample = MyMahakil()
+            # over_sample = MyMahakil()
             # over_sample = MySmote()
+            over_sample = MyRandomOverSampler()
             self.signal, self.label = over_sample.fit_sample(np.array(signal), np.array(label, dtype=int))
         else:
             self.signal = np.array(signal)
